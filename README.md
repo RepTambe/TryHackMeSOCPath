@@ -84,3 +84,46 @@ We will start our analysis by examining any reconnaissance attempt against the w
 Search Query: index=botsv1 imreallynotbatman.com
 
 Search Query explanation: We are going to look for the event logs in the index "botsv1" which contains the term imreallynotbatman.com
+
+Let us begin looking at the log source stream:http, which contains the http traffic logs, and examine the src_ip field from the left panel. Src_ip field contains the source IP address it finds in the logs.
+
+Search Query: index=botsv1 imreallynotbatman.com sourcetype=stream:http
+Search Query Explanation: This query will only look for the term  imreallynotbatman.comin the stream:http log source.
+![image](https://github.com/RepTambe/TryHackMeSOCPath/assets/56054621/717609b9-a1fc-457a-bcef-59fb29e6ed55)
+
+
+So what do we need to do to validate the scanning attempt? Simple, dig further into the weblogs. Let us narrow down the result, look into the suricata logs, and see if any rule is triggered on this communication.
+
+Search Query: index=botsv1 imreallynotbatman.com src=40.80.148.42 sourcetype=suricata
+
+Search Query Explanation: This query will show the logs from the suricata log source that are detected/generated from the source IP 40.80.248.42
+
+### Questions
+1. One suricata alert highlighted the CVE value associated with the attack attempt. What is the CVE value?
+I took my previous search query of Search Query: index=botsv1 imreallynotbatman.com src=40.80.148.42 sourcetype=suricata. I added "cve" at the end. Then I found the alert section. There where only 2 types of alerts. From there I found th e2 types of CVE and the answer was **CVE-2014-6271**
+2. What is the CMS our web server is using?
+   From the base search I analyzed the first log. "url":"\/joomla\/images\/imnotbatman.jpg" Found wherre the content was stored, the asnwer is **Joomla**
+
+   Exploitation Phase
+
+The attacker needs to exploit the vulnerability to gain access to the system/server.
+
+In this task, we will look at the potential exploitation attempt from the attacker against our web server and see if the attacker got successful in exploiting or not.
+
+To begin our investigation, let's note the information we have so far:
+
+We found two IP addresses from the reconnaissance phase with sending requests to our server.
+One of the IPs 40.80.148.42 was seen attempting to scan the server with IP 192.168.250.70.
+The attacker was using the web scanner Acunetix for the scanning attempt.
+Count
+
+Let's use the following search query to see the number of counts by each source IP against the webserver.
+
+Search Query:index=botsv1 imreallynotbatman.com sourcetype=stream* | stats count(src_ip) as Requests by src_ip | sort - Requests
+
+Query Explanation: This query uses the stats function to display the count of the IP addresses in the field src_ip.
+
+![image](https://github.com/RepTambe/TryHackMeSOCPath/assets/56054621/299a6ad8-e0eb-440c-ae96-27146584de4b)
+
+
+
