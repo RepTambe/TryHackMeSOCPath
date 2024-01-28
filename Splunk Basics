@@ -1,0 +1,8 @@
+Splunk: Basics:::
+
+
+Splunk has three main components, namely Forwarder, Indexer, and Search Head. These components are explained below:
+
+
+Forwader
+images/forwarder.png
