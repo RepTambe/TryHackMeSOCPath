@@ -5,4 +5,5 @@ Splunk has three main components, namely Forwarder, Indexer, and Search Head. Th
 
 
 Forwader
-images/forwarder.png
+
+https://github.com/RepTambe/TryHackMeSOCPath/blob/main/images/forwarder.png?raw=true
